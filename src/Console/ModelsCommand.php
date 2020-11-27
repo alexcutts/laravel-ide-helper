@@ -895,7 +895,9 @@ class ModelsCommand extends Command
         $paramsWithDefault = [];
         /** @var \ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
-            $paramClass = $param->getClass();
+            $paramClass = $param->getType() && !$param->getType()->isBuiltin()
+                ? new ReflectionClass($param->getType()->getName())
+                : null;
             $paramStr = (!is_null($paramClass) ? '\\' . $paramClass->getName() . ' ' : '') . '$' . $param->getName();
             if ($param->isOptional() && $param->isDefaultValueAvailable()) {
                 $default = $param->getDefaultValue();
